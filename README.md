@@ -2,14 +2,14 @@
 
 A small, source-grounded investment research assistant for fictional deal-team documents. It demonstrates document ingestion, page-aware RAG, pgvector retrieval, deterministic financial tools, token metadata, and lightweight audit logging.
 
-> Demo data only. This is not investment advice and is not a production financial-services or regulatory-compliance system.
 
 ## Run locally
 
 1. Copy `.env.example` to `.env` and set Azure OpenAI credentials (or set `LLM_PROVIDER=openai` and `OPENAI_API_KEY`).
 2. Run `docker compose up --build`.
 3. Open `http://localhost:5173`.
-4. Upload fictional Acme Corp PDFs and ask questions such as:
+4. Generate the fictional Acme Corp PDFs with `docker compose exec backend python scripts/create_demo_pdfs.py --output-dir /app/demo`.
+5. Upload the PDFs from `demo/` and ask questions such as:
    - What are Acme's biggest risks?
    - What was revenue growth between 2024 and 2025?
    - What is the company's debt-to-EBITDA ratio?

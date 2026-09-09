@@ -20,6 +20,8 @@ services:
       AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${AZURE_OPENAI_EMBEDDING_DEPLOYMENT:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
     ports: ["8000:8000"]
+    volumes:
+      - ./demo:/app/demo
     depends_on: [db]
   frontend:
     build: ./frontend
