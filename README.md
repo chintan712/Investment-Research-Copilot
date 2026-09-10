@@ -10,11 +10,11 @@ The project uses fictional Acme Corp documents for demonstration.
 
 ### Research Workspace
 
-![Investment Research Copilot workspace](docs/screenshots/research-workspace.png)
+![alt text](image.png)
 
 ### Document-Scoped Research
 
-![Document selection and grounded answer](docs/screenshots/document-scoped-research.png)
+![alt text](image-1.png)
 
 ## What It Does
 
