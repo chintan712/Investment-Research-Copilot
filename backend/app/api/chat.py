@@ -11,6 +11,7 @@ from app.db.database import get_db
 from app.db.models import AIRequest
 from app.llm.factory import build_provider
 from app.rag.prompt import SYSTEM_PROMPT, build_context
+from app.rag.citations import unique_citations
 from app.rag.retriever import retrieve_relevant_chunks
 
 router = APIRouter(tags=["chat"])
@@ -45,11 +46,11 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
             response.usage.input_tokens = (response.usage.input_tokens or 0) + (final_response.usage.input_tokens or 0)
             response.usage.output_tokens = (response.usage.output_tokens or 0) + (final_response.usage.output_tokens or 0)
         elapsed = round((time.perf_counter() - started) * 1000)
-        source_keys = {(chunk.document, chunk.page) for chunk in selected}
+        citations = unique_citations(selected)
         usage = Usage(model=response.usage.model, input_tokens=response.usage.input_tokens, output_tokens=response.usage.output_tokens, total_tokens=response.usage.total_tokens, retrieved_chunks=len(selected), latency_ms=elapsed)
-        db.add(AIRequest(question=request.question, model=usage.model, input_tokens=usage.input_tokens, output_tokens=usage.output_tokens, total_tokens=usage.total_tokens, retrieved_chunks=len(selected), latency_ms=elapsed, response=response.text, metadata_json={"sources": list(source_keys), "tool_calls": [call.model_dump() for call in calls]}))
+        db.add(AIRequest(question=request.question, model=usage.model, input_tokens=usage.input_tokens, output_tokens=usage.output_tokens, total_tokens=usage.total_tokens, retrieved_chunks=len(selected), latency_ms=elapsed, response=response.text, metadata_json={"sources": [citation.model_dump() for citation in citations], "tool_calls": [call.model_dump() for call in calls]}))
         db.commit()
-        return ChatResponse(answer=response.text, sources=[Citation(document=document, page=page) for document, page in sorted(source_keys)], tool_calls=calls, usage=usage)
+        return ChatResponse(answer=response.text, sources=[Citation.model_validate(citation) for citation in citations], tool_calls=calls, usage=usage)
     except HTTPException:
         raise
     except Exception as exc:

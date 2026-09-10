@@ -6,6 +6,9 @@ from app.agent.tools import (
     calculate_revenue_growth,
 )
 from app.documents.chunker import PageText, chunk_document
+from app.rag.citations import unique_citations
+from app.rag.prompt import build_context
+from app.rag.retriever import RetrievedChunk
 
 
 def test_revenue_growth() -> None:
@@ -38,3 +41,26 @@ def test_chunking_preserves_page_metadata() -> None:
         (2, "four five"),
         (2, "six"),
     ]
+
+
+def test_citations_are_unique_and_keep_retrieval_order() -> None:
+    chunks = [
+        RetrievedChunk("first", "Acme.pdf", 2, 0.9),
+        RetrievedChunk("duplicate page", "Acme.pdf", 2, 0.8),
+        RetrievedChunk("second", "Risks.pdf", 4, 0.7),
+    ]
+    citations = unique_citations(chunks)
+    assert [citation.inline() for citation in citations] == [
+        "[Acme.pdf, p.2]",
+        "[Risks.pdf, p.4]",
+    ]
+
+
+def test_context_budget_stops_before_exceeding_limit() -> None:
+    chunks = [
+        RetrievedChunk("one two", "Acme.pdf", 1, 0.9),
+        RetrievedChunk("three four", "Acme.pdf", 2, 0.8),
+    ]
+    context, selected = build_context(chunks, max_words=3)
+    assert "one two" in context
+    assert len(selected) == 1

@@ -50,7 +50,7 @@ flowchart LR
 ## Development checks
 
 ```bash
-PYTHONPATH=backend python3 -m pytest backend/tests -q
+docker compose run --rm backend pytest tests -q
 python3 -m compileall -q backend
 ```
 
