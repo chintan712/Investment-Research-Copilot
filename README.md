@@ -6,6 +6,16 @@ Users upload company documents, ask questions, and receive answers grounded in t
 
 The project uses fictional Acme Corp documents for demonstration.
 
+## Screenshots
+
+### Research Workspace
+
+![Investment Research Copilot workspace](docs/screenshots/research-workspace.png)
+
+### Document-Scoped Research
+
+![Document selection and grounded answer](docs/screenshots/document-scoped-research.png)
+
 ## What It Does
 
 - Uploads and processes PDF documents
