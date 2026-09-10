@@ -1,2 +1,265 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-:root{font-family:'Space Grotesk',sans-serif;color:#19322d;background:#f2efe7;font-synthesis:none}*{box-sizing:border-box}body{margin:0}main{min-height:100vh;padding:clamp(28px,6vw,88px);background:radial-gradient(circle at 85% 0,#d7eadc 0,transparent 28%),linear-gradient(115deg,#f2efe7 0%,#e6eee5 100%)}header{max-width:880px;margin:0 auto 72px}.kicker,.section-title,.answer-label,.metadata,.status{font:500 11px 'DM Mono',monospace;letter-spacing:0}.kicker{color:#c45235;margin:0 0 22px}h1{font-size:clamp(48px,8vw,108px);line-height:.9;letter-spacing:0;margin:0;font-weight:600}h1 em{color:#c45235;font-style:normal}.lede{font-size:18px;line-height:1.5;max-width:500px;margin:30px 0 0;color:#58706a}.workspace{max-width:1120px;margin:auto;display:grid;grid-template-columns:280px 1fr;gap:60px}.section-title{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #9eaaa0;padding-top:14px}.upload{color:#c45235;cursor:pointer}.upload input{display:none}.docs{margin-top:24px}.doc{display:flex;gap:12px;padding:15px 0;border-bottom:1px solid #cbd4ca}.doc strong,.doc small{display:block}.doc strong{font-size:14px}.doc small{font:11px 'DM Mono';color:#789088;margin-top:5px}.pdf{font:11px 'DM Mono';color:#c45235;border:1px solid #c45235;padding:4px;height:max-content}.muted{font-size:14px;color:#789088;line-height:1.5}.status{color:#c45235}.question{margin-top:34px;background:#fffdf8;border:1px solid #bdc9be;padding:20px;display:flex;gap:14px;align-items:flex-end}textarea{background:transparent;border:0;resize:vertical;min-height:90px;flex:1;font:18px 'Space Grotesk';color:#19322d;outline:0}button{border:0;background:#19322d;color:#f2efe7;padding:15px 18px;font:500 12px 'DM Mono';cursor:pointer}button:disabled{opacity:.5}.error{color:#a53b2d}.answer{margin-top:22px;background:#fffdf8;padding:28px;border-left:4px solid #c45235}.answer-label{color:#c45235;margin:0 0 18px}.answer-text{font-size:19px;line-height:1.55;white-space:pre-wrap}.sources{border-top:1px solid #d6ddd4;padding-top:16px;display:flex;gap:18px;flex-wrap:wrap;font-size:13px}.sources strong{color:#c45235}.metadata{display:flex;gap:18px;flex-wrap:wrap;margin-top:28px;color:#789088}.metadata b{color:#19322d;font-weight:500}@media(max-width:760px){main{padding:28px 20px}header{margin-bottom:50px}.workspace{display:block}.workspace aside{margin-bottom:50px}.question{display:block}button{margin-top:14px;width:100%}}
+
+.history {
+    margin-top: 58px
+}
+
+.history-item {
+    padding: 16px 0;
+    border-bottom: 1px solid #cbd4ca
+}
+
+.history-item strong,
+.history-item small {
+    display: block
+}
+
+.history-item strong {
+    font-size: 14px;
+    font-weight: 500
+}
+
+.history-item small {
+    font: 11px 'DM Mono';
+    color: #789088;
+    margin-top: 7px
+}
+
+:root {
+    font-family: 'Space Grotesk', sans-serif;
+    color: #19322d;
+    background: #f2efe7;
+    font-synthesis: none
+}
+
+* {
+    box-sizing: border-box
+}
+
+body {
+    margin: 0
+}
+
+main {
+    min-height: 100vh;
+    padding: clamp(28px, 6vw, 88px);
+    background: radial-gradient(circle at 85% 0, #d7eadc 0, transparent 28%), linear-gradient(115deg, #f2efe7 0%, #e6eee5 100%)
+}
+
+header {
+    max-width: 880px;
+    margin: 0 auto 72px
+}
+
+.kicker,
+.section-title,
+.answer-label,
+.metadata,
+.status {
+    font: 500 11px 'DM Mono', monospace;
+    letter-spacing: 0
+}
+
+.kicker {
+    color: #c45235;
+    margin: 0 0 22px
+}
+
+h1 {
+    font-size: clamp(48px, 8vw, 108px);
+    line-height: .9;
+    letter-spacing: 0;
+    margin: 0;
+    font-weight: 600
+}
+
+h1 em {
+    color: #c45235;
+    font-style: normal
+}
+
+.lede {
+    font-size: 18px;
+    line-height: 1.5;
+    max-width: 500px;
+    margin: 30px 0 0;
+    color: #58706a
+}
+
+.workspace {
+    max-width: 1120px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 60px
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #9eaaa0;
+    padding-top: 14px
+}
+
+.upload {
+    color: #c45235;
+    cursor: pointer
+}
+
+.upload input {
+    display: none
+}
+
+.docs {
+    margin-top: 24px
+}
+
+.doc {
+    display: flex;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid #cbd4ca
+}
+
+.doc strong,
+.doc small {
+    display: block
+}
+
+.doc strong {
+    font-size: 14px
+}
+
+.doc small {
+    font: 11px 'DM Mono';
+    color: #789088;
+    margin-top: 5px
+}
+
+.pdf {
+    font: 11px 'DM Mono';
+    color: #c45235;
+    border: 1px solid #c45235;
+    padding: 4px;
+    height: max-content
+}
+
+.muted {
+    font-size: 14px;
+    color: #789088;
+    line-height: 1.5
+}
+
+.status {
+    color: #c45235
+}
+
+.question {
+    margin-top: 34px;
+    background: #fffdf8;
+    border: 1px solid #bdc9be;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-end
+}
+
+textarea {
+    background: transparent;
+    border: 0;
+    resize: vertical;
+    min-height: 90px;
+    flex: 1;
+    font: 18px 'Space Grotesk';
+    color: #19322d;
+    outline: 0
+}
+
+button {
+    border: 0;
+    background: #19322d;
+    color: #f2efe7;
+    padding: 15px 18px;
+    font: 500 12px 'DM Mono';
+    cursor: pointer
+}
+
+button:disabled {
+    opacity: .5
+}
+
+.error {
+    color: #a53b2d
+}
+
+.answer {
+    margin-top: 22px;
+    background: #fffdf8;
+    padding: 28px;
+    border-left: 4px solid #c45235
+}
+
+.answer-label {
+    color: #c45235;
+    margin: 0 0 18px
+}
+
+.answer-text {
+    font-size: 19px;
+    line-height: 1.55;
+    white-space: pre-wrap
+}
+
+.sources {
+    border-top: 1px solid #d6ddd4;
+    padding-top: 16px;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 13px
+}
+
+.sources strong {
+    color: #c45235
+}
+
+.metadata {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    color: #789088
+}
+
+.metadata b {
+    color: #19322d;
+    font-weight: 500
+}
+
+@media(max-width:760px) {
+    main {
+        padding: 28px 20px
+    }
+
+    header {
+        margin-bottom: 50px
+    }
+
+    .workspace {
+        display: block
+    }
+
+    .workspace aside {
+        margin-bottom: 50px
+    }
+
+    .question {
+        display: block
+    }
+
+    button {
+        margin-top: 14px;
+        width: 100%
+    }
+}
