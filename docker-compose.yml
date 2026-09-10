@@ -9,11 +9,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./infra/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U copilot -d copilot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
   backend:
     build: ./backend
     environment:
       DATABASE_URL: postgresql+psycopg://copilot:copilot@db:5432/copilot
-      LLM_PROVIDER: ${LLM_PROVIDER:-azure_openai}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
       AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-}
       AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY:-}
       AZURE_OPENAI_DEPLOYMENT: ${AZURE_OPENAI_DEPLOYMENT:-}
@@ -22,10 +27,14 @@ services:
     ports: ["8000:8000"]
     volumes:
       - ./demo:/app/demo
-    depends_on: [db]
+    depends_on:
+      db:
+        condition: service_healthy
   frontend:
     build: ./frontend
     ports: ["5173:5173"]
-    depends_on: [backend]
+    depends_on:
+      backend:
+        condition: service_started
 volumes:
   postgres_data:
