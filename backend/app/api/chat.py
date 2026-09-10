@@ -1,4 +1,5 @@
 import json
+import logging
 import time
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -15,6 +16,7 @@ from app.rag.citations import unique_citations
 from app.rag.retriever import retrieve_relevant_chunks
 
 router = APIRouter(tags=["chat"])
+logger = logging.getLogger(__name__)
 
 TOOL_DEFINITIONS = [
     {"type": "function", "function": {"name": "calculate_revenue_growth", "description": "Calculate percentage growth between two revenues.", "parameters": {"type": "object", "properties": {"previous_revenue": {"type": "number"}, "current_revenue": {"type": "number"}}, "required": ["previous_revenue", "current_revenue"]}}},
@@ -29,7 +31,7 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
     settings = get_settings()
     try:
         provider = build_provider(settings)
-        candidates = retrieve_relevant_chunks(db, provider, request.question, top_k=10)
+        candidates = retrieve_relevant_chunks(db, provider, request.question, top_k=10, document_id=request.document_id)
         context, selected = build_context(candidates, settings.max_context_tokens)
         if not selected:
             raise HTTPException(404, "I couldn't find sufficient evidence in the uploaded documents to answer this question.")
@@ -37,8 +39,12 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
         response = provider.generate_with_tools(SYSTEM_PROMPT, user_prompt, TOOL_DEFINITIONS)
         calls: list[ToolCall] = []
         for call in response.tool_calls:
-            arguments = json.loads(call["arguments"])
-            calls.append(ToolCall(tool=call["tool"], arguments=arguments, result=execute_tool(call["tool"], arguments)))
+            try:
+                arguments = json.loads(call["arguments"])
+                result = execute_tool(call["tool"], arguments)
+            except (json.JSONDecodeError, TypeError, ValueError, KeyError) as exc:
+                raise HTTPException(502, "The model returned invalid arguments for a financial calculation.") from exc
+            calls.append(ToolCall(tool=call["tool"], arguments=arguments, result=result))
         if calls:
             tool_results = "\n".join(f"Backend tool {call.tool} returned {call.result} for {call.arguments}." for call in calls)
             final_response = provider.generate(SYSTEM_PROMPT, f"{user_prompt}\n\n{tool_results}\nExplain the result and cite the supporting pages.")
@@ -55,4 +61,5 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
         raise
     except Exception as exc:
         db.rollback()
-        raise HTTPException(502, f"The research request could not be completed: {exc}") from exc
+        logger.exception("Research request failed")
+        raise HTTPException(502, "The research request could not be completed. Check the LLM configuration and try again.") from exc

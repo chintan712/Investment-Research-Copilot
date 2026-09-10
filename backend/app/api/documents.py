@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
@@ -10,6 +12,7 @@ from app.documents.parser import InvalidPDFError, extract_pages
 from app.llm.factory import build_provider
 
 router = APIRouter(prefix="/documents", tags=["documents"])
+logger = logging.getLogger(__name__)
 
 
 @router.post("/upload", response_model=DocumentResponse)
@@ -39,6 +42,10 @@ def upload_document(
     except (InvalidPDFError, RuntimeError, ValueError) as exc:
         db.rollback()
         raise HTTPException(400, str(exc)) from exc
+    except Exception as exc:
+        db.rollback()
+        logger.exception("Document ingestion failed")
+        raise HTTPException(502, "Document ingestion could not contact the embedding provider.") from exc
 
 
 @router.get("", response_model=list[DocumentResponse])

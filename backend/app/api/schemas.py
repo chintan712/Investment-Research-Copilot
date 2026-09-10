@@ -26,6 +26,7 @@ class Usage(BaseModel):
 
 class ChatRequest(BaseModel):
     question: str = Field(min_length=2, max_length=4000)
+    document_id: int | None = Field(default=None, gt=0)
 
 
 class ChatResponse(BaseModel):

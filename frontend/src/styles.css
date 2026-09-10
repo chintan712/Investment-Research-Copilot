@@ -111,15 +111,67 @@ h1 em {
     display: none
 }
 
+.upload-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 24px
+}
+
+select {
+    min-width: 0;
+    flex: 1;
+    padding: 9px 8px;
+    border: 1px solid #bdc9be;
+    background: #fffdf8;
+    color: #19322d;
+    font: 11px 'DM Mono'
+}
+
+.upload-controls .upload {
+    white-space: nowrap
+}
+
 .docs {
     margin-top: 24px
+}
+
+.scope-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 22px;
+    color: #789088;
+    font: 11px 'DM Mono'
+}
+
+.scope {
+    padding: 0;
+    background: transparent;
+    color: #789088;
+    font: 11px 'DM Mono';
+    text-decoration: underline
+}
+
+.scope.active {
+    color: #c45235
 }
 
 .doc {
     display: flex;
     gap: 12px;
     padding: 15px 0;
-    border-bottom: 1px solid #cbd4ca
+    border: 0;
+    border-bottom: 1px solid #cbd4ca;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    color: #19322d
+}
+
+.doc.selected {
+    border-left: 3px solid #c45235;
+    padding-left: 10px
 }
 
 .doc strong,
