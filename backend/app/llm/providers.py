@@ -16,6 +16,7 @@ class AzureOpenAIProvider:
             api_key=settings.azure_openai_api_key,
             azure_endpoint=settings.azure_openai_endpoint,
             api_version="2024-10-21",
+            timeout=settings.llm_timeout_seconds,
         )
 
     def embed(self, text: str) -> list[float]:
@@ -49,6 +50,6 @@ class OpenAIProvider(AzureOpenAIProvider):
     def __init__(self, settings: Settings) -> None:
         if not settings.openai_api_key:
             raise RuntimeError("OPENAI_API_KEY is not configured")
-        self.model_name = "gpt-4.1-mini"
-        self.embedding_model = "text-embedding-3-small"
-        self.client = OpenAI(api_key=settings.openai_api_key)
+        self.model_name = settings.openai_model
+        self.embedding_model = settings.openai_embedding_model
+        self.client = OpenAI(api_key=settings.openai_api_key, timeout=settings.llm_timeout_seconds)

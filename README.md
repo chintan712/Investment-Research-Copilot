@@ -5,7 +5,7 @@ A small, source-grounded investment research assistant for fictional deal-team d
 
 ## Run locally
 
-1. Copy `.env.example` to `.env` and set Azure OpenAI credentials (or set `LLM_PROVIDER=openai` and `OPENAI_API_KEY`).
+1. Create `.env` and set `OPENAI_API_KEY` (or use Azure OpenAI by setting `LLM_PROVIDER=azure_openai` and the Azure credentials).
 2. Run `docker compose up --build`.
 3. Open `http://localhost:5173`.
 4. Generate the fictional Acme Corp PDFs with `docker compose exec backend python scripts/create_demo_pdfs.py --output-dir /app/demo`.

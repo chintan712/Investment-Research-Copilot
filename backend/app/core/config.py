@@ -12,7 +12,10 @@ class Settings(BaseSettings):
     azure_openai_deployment: str | None = None
     azure_openai_embedding_deployment: str | None = None
     openai_api_key: str | None = None
+    openai_model: str = "gpt-4.1-mini"
+    openai_embedding_model: str = "text-embedding-3-small"
     anthropic_api_key: str | None = None
+    llm_timeout_seconds: float = 60.0
     max_context_tokens: int = 6000
     max_upload_bytes: int = 10_000_000
 

@@ -1,13 +1,15 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.api.chat import router as chat_router
 from app.api.documents import router as documents_router
 from app.api.requests import router as requests_router
-from app.db.database import Base, engine
+from app.db.database import Base, engine, get_db
 
 
 settings = get_settings()
@@ -27,5 +29,9 @@ app.include_router(requests_router)
 
 
 @app.get("/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+def health(db: Session = Depends(get_db)) -> dict[str, str]:
+    try:
+        db.execute(text("SELECT 1"))
+    except Exception as exc:
+        raise HTTPException(503, "Database is unavailable") from exc
+    return {"status": "ok", "database": "ok"}

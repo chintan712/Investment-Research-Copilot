@@ -48,9 +48,9 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)) -> ChatResponse:
         elapsed = round((time.perf_counter() - started) * 1000)
         citations = unique_citations(selected)
         usage = Usage(model=response.usage.model, input_tokens=response.usage.input_tokens, output_tokens=response.usage.output_tokens, total_tokens=response.usage.total_tokens, retrieved_chunks=len(selected), latency_ms=elapsed)
-        db.add(AIRequest(question=request.question, model=usage.model, input_tokens=usage.input_tokens, output_tokens=usage.output_tokens, total_tokens=usage.total_tokens, retrieved_chunks=len(selected), latency_ms=elapsed, response=response.text, metadata_json={"sources": [citation.model_dump() for citation in citations], "tool_calls": [call.model_dump() for call in calls]}))
+        db.add(AIRequest(question=request.question, model=usage.model, input_tokens=usage.input_tokens, output_tokens=usage.output_tokens, total_tokens=usage.total_tokens, retrieved_chunks=len(selected), latency_ms=elapsed, response=response.text, metadata_json={"sources": [{"document": citation.document, "page": citation.page} for citation in citations], "tool_calls": [call.model_dump() for call in calls]}))
         db.commit()
-        return ChatResponse(answer=response.text, sources=[Citation.model_validate(citation) for citation in citations], tool_calls=calls, usage=usage)
+        return ChatResponse(answer=response.text, sources=[Citation(document=citation.document, page=citation.page) for citation in citations], tool_calls=calls, usage=usage)
     except HTTPException:
         raise
     except Exception as exc:
