@@ -1,61 +1,79 @@
 # Investment Research Copilot
 
-A small, source-grounded investment research assistant for fictional deal-team documents. It demonstrates document ingestion, page-aware RAG, pgvector retrieval, deterministic financial tools, token metadata, and lightweight audit logging.
+Investment Research Copilot is a small AI research assistant for investment and private equity teams.
 
+Users upload company documents, ask questions, and receive answers grounded in the uploaded material. Responses include document and page citations, financial calculations, request metadata, and a history of previous research questions.
 
-## Run locally
+The project uses fictional Acme Corp documents for demonstration.
 
-1. Create `.env` and set `OPENAI_API_KEY` (or use Azure OpenAI by setting `LLM_PROVIDER=azure_openai` and the Azure credentials).
-2. Run `docker compose up --build`.
-3. Open `http://localhost:5173`.
-4. Generate the fictional Acme Corp PDFs with `docker compose exec backend python scripts/create_demo_pdfs.py --output-dir /app/demo`.
-5. Upload the PDFs from `demo/` and ask questions such as:
-   - What are Acme's biggest risks?
-   - What was revenue growth between 2024 and 2025?
-   - What is the company's debt-to-EBITDA ratio?
+## What It Does
 
-The API is available at `http://localhost:8000/docs`. The database contains no real company data.
+- Uploads and processes PDF documents
+- Preserves document and page information for citations
+- Searches uploaded documents using semantic retrieval
+- Answers questions using OpenAI or Azure OpenAI
+- Performs financial calculations with deterministic Python tools
+- Displays sources, token usage, retrieved chunks, latency, and tool calls
+- Keeps a lightweight history of previous AI requests
+- Allows questions to be scoped to one uploaded document or all documents
 
-## Architecture
+## Example Questions
+
+- What are Acme's biggest risks?
+- What was revenue growth between 2024 and 2025?
+- What is the company's debt-to-EBITDA ratio?
+- Should we investigate this company further?
+
+## How It Works
 
 ```mermaid
 flowchart LR
-  U[Researcher] --> F[React frontend]
-  F --> A[FastAPI]
-  A --> P[PyMuPDF + chunker]
-  P --> V[(PostgreSQL + pgvector)]
-  A --> R[Retriever + context budget]
-  R --> L[Azure OpenAI / OpenAI]
-  L --> T[Three deterministic Python tools]
-  A --> H[(AI request audit log)]
+  U[Researcher] --> F[React Frontend]
+  F --> A[FastAPI Backend]
+  A --> D[PDF Processing]
+  D --> V[(PostgreSQL + pgvector)]
+  V --> R[Relevant Evidence]
+  R --> L[OpenAI or Azure OpenAI]
+  L --> T[Financial Calculation Tools]
+  A --> C[Citations and Request History]
 ```
 
-## Design decisions
+## Run Locally
 
-- **PostgreSQL + pgvector:** one understandable persistence layer for documents, embeddings, and request history.
-- **RAG:** answers are constrained to retrieved page-aware chunks and return structured citations.
-- **Deterministic tools:** revenue growth, debt/EBITDA, and profit margin run in Python, not in model arithmetic.
-- **Context budget:** retrieval considers ten candidates, then keeps the best chunks under `MAX_CONTEXT_TOKENS` (implemented as a conservative word budget).
-- **Provider boundary:** Azure OpenAI is documented as primary; OpenAI can be selected without changing RAG code.
+1. Create a `.env` file with your OpenAI key:
 
-## Project layout
+```env
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your-api-key
+```
 
-- `backend/app/documents`: PDF extraction and chunking
-- `backend/app/rag`: retrieval and prompts
-- `backend/app/agent`: financial tools
-- `backend/app/llm`: provider abstraction and adapters
-- `backend/app/api`: upload, chat, and request-history routes
-- `frontend/src`: minimal evidence and chat workspace
-
-## Development checks
+2. Start the application:
 
 ```bash
-docker compose run --rm backend pytest tests -q
-python3 -m compileall -q backend
+docker compose up --build
 ```
 
-The test suite covers the deterministic calculations and page metadata. Provider integration requires valid credentials and a running pgvector database.
+3. Open the frontend at [http://localhost:5173](http://localhost:5173).
+
+4. Generate the fictional demo PDFs:
+
+```bash
+docker compose exec backend python scripts/create_demo_pdfs.py --output-dir /app/demo
+```
+
+5. Upload the files from `demo/` and start asking questions.
+
+The API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+## Technology
+
+- Python and FastAPI
+- React and TypeScript
+- PostgreSQL and pgvector
+- PyMuPDF for PDF processing
+- OpenAI or Azure OpenAI
+- Docker Compose
 
 ## Limitations
 
-This MVP uses fictional documents, simplified extraction and context budgeting, no authentication, no market data, and no regulatory certification. Token counts are returned from the provider when available and remain unavailable rather than being fabricated.
+This is a portfolio MVP using fictional data. It is not investment advice and is not a production financial-services, compliance, or regulatory system. It does not include authentication, real-time market data, or confidential company information.
