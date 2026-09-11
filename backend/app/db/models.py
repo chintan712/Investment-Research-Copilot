@@ -12,7 +12,7 @@ class Document(Base):
     __tablename__ = "documents"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    filename: Mapped[str] = mapped_column(String(255))
+    filename: Mapped[str] = mapped_column(String(255), unique=True)
     document_type: Mapped[str | None] = mapped_column(String(80))
     uploaded_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     chunks: Mapped[list["DocumentChunk"]] = relationship(cascade="all, delete-orphan")

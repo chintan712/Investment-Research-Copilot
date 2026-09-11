@@ -24,6 +24,11 @@ def upload_document(
     settings = get_settings()
     if file.content_type != "application/pdf":
         raise HTTPException(415, "Only PDF uploads are supported")
+    #check for duplicate filename in the database
+    filename = file.filename or "document.pdf"
+    if db.query(Document).filter(Document.filename == filename).first():
+        raise HTTPException(409, f"A document named '{filename}' already exists")
+
     data = file.file.read(settings.max_upload_bytes + 1)
     if len(data) > settings.max_upload_bytes:
         raise HTTPException(413, "The uploaded file is too large")
@@ -47,6 +52,15 @@ def upload_document(
         logger.exception("Document ingestion failed")
         raise HTTPException(502, "Document ingestion could not contact the embedding provider.") from exc
 
+@router.delete("/{document_id}", status_code=204)
+def delete_document(document_id: int, db: Session = Depends(get_db)) -> None:
+    document = db.query(Document).filter(Document.id == document_id).first()
+    if document is None:
+        raise HTTPException(404, "Document not found")
+
+    db.query(DocumentChunk).filter(DocumentChunk.document_id == document_id).delete()
+    db.delete(document)
+    db.commit()
 
 @router.get("", response_model=list[DocumentResponse])
 def list_documents(db: Session = Depends(get_db)) -> list[Document]:

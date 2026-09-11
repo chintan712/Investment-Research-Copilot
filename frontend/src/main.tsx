@@ -18,6 +18,8 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [documentType, setDocumentType] = useState('research');
   const [selectedDocumentId, setSelectedDocumentId] = useState<number | null>(null);
+  const [deletingDocumentId, setDeletingDocumentId] = useState<number | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
   const [error, setError] = useState('');
 
   const loadDocuments = () => fetch(`${API}/documents`).then((response) => response.json()).then((items: Document[]) => { setDocuments(items); setSelectedDocumentId((current) => current !== null && items.some((item) => item.id === current) ? current : null); }).catch(() => setError('Backend is unavailable. Start the API and try again.'));
@@ -60,6 +62,22 @@ function App() {
     }
   }
 
+  async function deleteDocument(document: Document) {
+    setDeletingDocumentId(document.id);
+    setPendingDeleteId(null);
+    setError('');
+    try {
+      const response = await fetch(`${API}/documents/${document.id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error((await response.json()).detail || 'Delete failed');
+      setDocuments((items) => items.filter((item) => item.id !== document.id));
+      if (selectedDocumentId === document.id) setSelectedDocumentId(null);
+    } catch (reason) {
+      setError(String(reason));
+    } finally {
+      setDeletingDocumentId(null);
+    }
+  }
+
   return (
     <main>
       <header><p className="kicker">INTERNAL RESEARCH WORKSPACE</p><h1>Investment Research<br /><em>Copilot</em></h1><p className="lede">Grounded answers for fictional deal teams, with every claim tied back to the source material.</p></header>
@@ -73,7 +91,7 @@ function App() {
             <label className="upload">{uploading ? 'Processing PDF...' : '+ Add PDF'}<input type="file" accept="application/pdf" disabled={uploading} onChange={(event) => { const file = event.target.files?.[0]; if (file) void upload(file); event.currentTarget.value = ''; }} /></label>
           </div>
           <div className="scope-row"><span>Ask about</span><button className={selectedDocumentId === null ? 'scope active' : 'scope'} onClick={() => setSelectedDocumentId(null)} disabled={uploading}>All documents</button></div>
-          <div className="docs">{documents.length ? documents.map((document) => <button className={selectedDocumentId === document.id ? 'doc selected' : 'doc'} key={document.id} onClick={() => setSelectedDocumentId(document.id)} disabled={uploading} aria-pressed={selectedDocumentId === document.id}><span className="pdf">PDF</span><div><strong>{document.filename}</strong><small>{document.document_type || 'Research document'}{selectedDocumentId === document.id ? ' · Selected' : ''}</small></div></button>) : <p className="muted">Upload fictional company PDFs to begin.</p>}</div>
+          <div className="docs">{documents.length ? documents.map((document) => <div className={selectedDocumentId === document.id ? 'doc selected' : 'doc'} key={document.id}><button className="doc-content" onClick={() => setSelectedDocumentId(document.id)} disabled={uploading || deletingDocumentId !== null} aria-pressed={selectedDocumentId === document.id}><span className="pdf">PDF</span><span><strong>{document.filename}</strong><small>{document.document_type || 'Research document'}{selectedDocumentId === document.id ? ' · Selected' : ''}</small></span></button>{pendingDeleteId === document.id ? <span className="delete-confirm"><button onClick={() => void deleteDocument(document)} disabled={deletingDocumentId !== null}>Delete</button><button onClick={() => setPendingDeleteId(null)} disabled={deletingDocumentId !== null}>Cancel</button></span> : <button className="delete-document" onClick={() => setPendingDeleteId(document.id)} disabled={uploading || deletingDocumentId !== null} aria-label={`Delete ${document.filename}`} title="Delete document">{deletingDocumentId === document.id ? '…' : '×'}</button>}</div>) : <p className="muted">Upload fictional company PDFs to begin.</p>}</div>
         </aside>
         <section className="chat">
           <div className="section-title"><span>02 / Ask the desk</span><span className="status">{selectedDocumentId === null ? '● ALL SOURCES' : '● SELECTED PDF'}</span></div>
