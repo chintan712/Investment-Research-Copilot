@@ -48,6 +48,12 @@ flowchart LR
   A --> C[Citations and Request History]
 ```
 
+## Hosted Deployment
+
+- Frontend: Vercel
+- Backend: Railway
+- Database: Neon PostgreSQL with pgvector
+
 ## Run Locally
 
 1. Create a `.env` file with your OpenAI key:
@@ -63,7 +69,7 @@ OPENAI_API_KEY=your-api-key
 docker compose up --build
 ```
 
-3. Open the frontend at [http://localhost:5173](http://localhost:5173).
+3. Open the hosted frontend at [https://investment-research-copilot.vercel.app](https://investment-research-copilot.vercel.app).
 
 4. Generate the fictional demo PDFs:
 

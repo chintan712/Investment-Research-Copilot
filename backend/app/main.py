@@ -25,7 +25,6 @@ app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173",
                                                 "http://127.0.0.1:5174",
                                                 "https://investment-research-copilot.vercel.app",
-                                                "https://investment-research-copilot-701neoank-dchintan2204-7335.vercel.app"
 ], allow_methods=["*"], allow_headers=["*"])
 app.include_router(documents_router)
 app.include_router(chat_router)
