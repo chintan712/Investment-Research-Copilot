@@ -10,11 +10,11 @@ The project uses fictional Acme Corp documents for demonstration.
 
 ### Research Workspace
 
-![alt text](image.png)
+![Investment Research Copilot workspace](images/image.png)
 
 ### Document-Scoped Research
 
-![alt text](image-1.png)
+![Document-scoped research view](images/image-1.png)
 
 ## What It Does
 
@@ -79,7 +79,7 @@ docker compose exec backend python scripts/create_demo_pdfs.py --output-dir /app
 
 5. Upload the files from `demo/` and start asking questions.
 
-The API documentation is available at [http://localhost:8000/docs](http://localhost:8000/docs).
+The API documentation is available at [https://investmentreasearchcopilot-backend-production.up.railway.app/docs](https://investmentreasearchcopilot-backend-production.up.railway.app/docs).
 
 ## Technology
 
