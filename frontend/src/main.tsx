@@ -7,7 +7,7 @@ type ChatResponse = { answer: string; sources: Citation[]; usage: { model?: stri
 type Document = { id: number; filename: string; document_type?: string; uploaded_at: string };
 type RequestHistory = { id: number; timestamp: string; question: string; model?: string; total_tokens?: number; retrieved_chunks: number; latency_ms: number; response: string };
 
-const API = 'https://investmentreasearchcopilot-backend-production.up.railway.app/';
+const API = 'https://investmentreasearchcopilot-backend-production.up.railway.app';
 
 function App() {
   const [documents, setDocuments] = useState<Document[]>([]);
