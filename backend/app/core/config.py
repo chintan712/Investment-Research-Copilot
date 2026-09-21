@@ -1,11 +1,12 @@
 from functools import lru_cache
+import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     app_name: str = "Investment Research Copilot"
-    database_url: str = "postgresql+psycopg://copilot:copilot@localhost:5432/copilot"
+    database_url: str = os.getenv("DATABASE_URL",)
     llm_provider: str = "azure_openai"
     azure_openai_endpoint: str | None = None
     azure_openai_api_key: str | None = None

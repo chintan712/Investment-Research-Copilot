@@ -17,7 +17,7 @@ services:
   backend:
     build: ./backend
     environment:
-      DATABASE_URL: postgresql+psycopg://copilot:copilot@db:5432/copilot
+      DATABASE_URL: postgresql+psycopg://neondb_owner:npg_CDv3ZfRQjmn7@ep-fragrant-boat-b5k9q10h-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
       LLM_PROVIDER: ${LLM_PROVIDER:-openai}
       AZURE_OPENAI_ENDPOINT: ${AZURE_OPENAI_ENDPOINT:-}
       AZURE_OPENAI_API_KEY: ${AZURE_OPENAI_API_KEY:-}
