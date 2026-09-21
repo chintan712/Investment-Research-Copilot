@@ -79,8 +79,6 @@ docker compose exec backend python scripts/create_demo_pdfs.py --output-dir /app
 
 5. Upload the files from `demo/` and start asking questions.
 
-The API documentation is available at [https://investmentreasearchcopilot-backend-production.up.railway.app/docs](https://investmentreasearchcopilot-backend-production.up.railway.app/docs).
-
 ## Technology
 
 - Python and FastAPI
